@@ -1,0 +1,14 @@
+http://localhost:8000/api/health
+
+http:// -> PROTOCAL
+localhost -> SERVER ADDRESS
+8000 -> PORT
+
+
+npm init -y
+npm i express mongoose dotenv cors helmet morgan
+npm i nodemon -D
+"start": "node server.js"
+"dev": "nodemon server.js"
+"main": "server.js"
+npm run dev
