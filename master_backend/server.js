@@ -1,49 +1,36 @@
+// server.js
 const express = require('express');
 const cors = require('cors');
 const helmet = require('helmet');
 const morgan = require('morgan');
 require('dotenv').config();
+
 const { connectDB } = require('./config/db.mongo');
+const errorHandler = require('./middlewares/errorHandler');
+const rateLimiter = require('./middlewares/rateLimiter');
+
+const healthRoutes = require('./routes/healthRoutes');
+const authRoutes = require('./routes/authRoutes');
+const userRoutes = require('./routes/userRoutes');
+const productRoutes = require('./routes/productRoutes');
 
 const app = express();
 
-//security Headers & Logging
+// Security Headers & Logging
 app.use(helmet());
 if (process.env.NODE_ENV !== 'test') {
-    app.use(morgan(process.env.NODE_ENV === 'production' ? 'combined' : 'dev'));
+  app.use(morgan(process.env.NODE_ENV === 'production' ? 'combined' : 'dev'));
 }
 
 // CORS Configuration
-const allowedOrigins = [
-    process.env.FRONTEND_URL,
-    'http://localhost:3000',
-    'http://127.0.0.1:3000',
-    'http://localhost:5173',
-    'http://127.0.0.1:5173',
-    'http://localhost:4200',
-    'http://127.0.0.1:4200',
-].filter(Boolean);
+app.use(cors());
 
-app.use(
-    cors({
-        origin: (origin, callback) => {
-            if (!origin || allowedOrigins.includes(origin) || allowedOrigins.length === 0) {
-                callback(null, true);
-                return;
-            }
-            callback(new Error('Not allowed by CORS policy'));
-        },
-        methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-        credentials: true,
-    })
-);
-
+// Parsers & Rate Limiter
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(rateLimiter(200, 15 * 60 * 1000));
 
-connectDB();
-
-// Root API Welcome / Directory
+// Root Discovery
 app.get('/', (req, res) => {
   res.json({
     success: true,
@@ -54,58 +41,38 @@ app.get('/', (req, res) => {
       auth: {
         register: 'POST /api/auth/register',
         login: 'POST /api/auth/login',
-        me: 'GET /api/auth/me (Bearer Token required)',
-        updateDetails: 'PUT /api/auth/updatedetails (Bearer Token required)',
-        updatePassword: 'PUT /api/auth/updatepassword (Bearer Token required)',
+        me: 'GET /api/auth/me',
       },
-      users: {
-        getAll: 'GET /api/users (Admin only)',
-        create: 'POST /api/users (Admin only)',
-        getById: 'GET /api/users/:id (Admin only)',
-        update: 'PUT /api/users/:id (Admin only)',
-        delete: 'DELETE /api/users/:id (Admin only)',
-      },
-      products: {
-        getAll: 'GET /api/products (Public)',
-        getById: 'GET /api/products/:id (Public)',
-        create: 'POST /api/products (Admin / Moderator only)',
-        update: 'PUT /api/products/:id (Admin / Moderator only)',
-        delete: 'DELETE /api/products/:id (Admin only)',
-      },
+      users: { getAll: 'GET /api/users (Admin only)' },
+      products: { getAll: 'GET /api/products' },
     },
   });
 });
 
-// Routes
+// Mount Routes
+app.use('/api', healthRoutes);
+app.use('/api/auth', authRoutes);
+app.use('/api/users', userRoutes);
+app.use('/api/products', productRoutes);
 
-// 404 Handler for undefined routes
+// 404 Fallback
 app.use((req, res) => {
-    res.status(404).json({ 
-      success: false, 
-      error: `Route ${req.method} ${req.originalUrl} not found` 
-    });
+  res.status(404).json({
+    success: false,
+    error: `Route ${req.method} ${req.originalUrl} not found`,
+  });
 });
 
-
-//Server Initialization
-let server;
+// Central Error Handler
+app.use(errorHandler);
 
 const PORT = process.env.PORT || 5000;
+connectDB();
 
-if(require.main === module) {
-  server = app.listen(PORT, '0.0.0.0', () => {
-    console.log(`Server is running on port ${process.env.NODE_ENV || 'development'} mode on port ${PORT}`);
+if (require.main === module) {
+  app.listen(PORT, '0.0.0.0', () => {
+    console.log(`Server running in ${process.env.NODE_ENV || 'development'} mode on port ${PORT}`);
   });
 }
-
-// Handle unhandled promise rejections
-process.on('unhandledRejection', (err) => {
-  console.error(`Unhandled Rejection: ${err.message}`);
-});
-
-// Handle uncaught exceptions
-process.on('uncaughtException', (err) => {
-  console.error(`Uncaught Exception: ${err.message}`);
-});
 
 module.exports = app;
