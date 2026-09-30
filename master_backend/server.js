@@ -67,12 +67,25 @@ app.use((req, res) => {
 app.use(errorHandler);
 
 const PORT = process.env.PORT || 5000;
-connectDB();
 
-if (require.main === module) {
-  app.listen(PORT, '0.0.0.0', () => {
-    console.log(`Server running in ${process.env.NODE_ENV || 'development'} mode on port ${PORT}`);
-  });
-}
+const startServer = async () => {
+  try {
+    await connectDB();
+
+    if (require.main === module) {
+      app.listen(PORT, '0.0.0.0', () => {
+        console.log(
+          `Server running in ${process.env.NODE_ENV || 'development'} mode on port ${PORT}`
+        );
+      });
+    }
+  } catch (error) {
+    console.error('Application startup failed:', error.message);
+
+    process.exit(1);
+  }
+};
+
+startServer();
 
 module.exports = app;

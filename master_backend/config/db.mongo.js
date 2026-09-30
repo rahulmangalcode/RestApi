@@ -10,16 +10,19 @@ const isMongoConfigured = () => {
 };
 
 const connectDB = async () => {
-    if (!isMongoConfigured()) {
-        console.warn('Warning: MONGODB_URI is not configured. Starting the API without a database connection.');
-    return;
-}
-    try {
-        await mongoose.connect(process.env.MONGODB_URI);
-        console.log('Success: MongoDB Atlas Connected successfully');
-    } catch (error) {
-        console.error('Error connecting to MongoDB:', error);
-    }
+  if (!isMongoConfigured()) {
+    throw new Error('MONGODB_URI is not configured');
+  }
+
+  try {
+    await mongoose.connect(process.env.MONGODB_URI);
+
+    console.log('Success: MongoDB Atlas Connected successfully');
+  } catch (error) {
+    console.error('Error connecting to MongoDB:', error.message);
+
+    throw error;
+  }
 };
 
 
