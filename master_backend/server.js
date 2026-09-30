@@ -72,3 +72,25 @@ app.get('/', (req, res) => {
     },
   });
 });
+
+// Routes
+
+// 404 Handler for undefined routes
+app.use((req, res) => {
+    res.status(404).json({ 
+      success: false, 
+      error: `Route ${req.method} ${req.originalUrl} not found` 
+    });
+});
+
+
+//Server Initialization
+let server;
+
+const PORT = process.env.PORT || 5000;
+
+if(require.main === module) {
+  server = app.listen(PORT, '0.0.0.0', () => {
+    console.log(`Server is running on port ${process.env.NODE_ENV || 'development'} mode on port ${PORT}`);
+  });
+}
