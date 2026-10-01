@@ -1,0 +1,293 @@
+{
+  "info": {
+    "_postman_id": "b936efab-860a-4f13-98bd-118267201954",
+    "name": "backend",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "58541155"
+  },
+  "item": [
+    {
+      "name": "users",
+      "item": [
+        {
+          "name": "getAllUsers",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseurl}}/api/users",
+              "host": [
+                "{{baseurl}}"
+              ],
+              "path": [
+                "api",
+                "users"
+              ]
+            },
+            "description": "Get All Users\n\nDescription:  \nFetches all users from the database.\n\nMethod:  \nGET\n\nEndpoint:  \n/api/users\n\nAuthentication:  \nRequired\n\nResponse:  \nReturns a list of all registered users."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "products",
+      "item": [
+        {
+          "name": "getAllProducts",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseurl}}/api/products",
+              "host": [
+                "{{baseurl}}"
+              ],
+              "path": [
+                "api",
+                "products"
+              ]
+            },
+            "description": "Test Case 15 — Public Product Catalog Browsing\n\nDescription:  \nVerifies that users can browse the product catalog without providing an authentication token.\n\nMethod:  \nGET\n\nEndpoint:  \n/api/products\n\nAuthentication:  \nNot Required\n\nExpected Response:  \n200 OK\n\nResponse:  \nReturns the available products with their details."
+          },
+          "response": []
+        },
+        {
+          "name": "createProduct",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"name\": \"Java Programming Book\",\r\n    \"description\": \"Beginner-friendly book for learning Java programming\",\r\n    \"price\": 799,\r\n    \"category\": \"books\",\r\n    \"inStock\": true,\r\n    \"quantity\": 15\r\n  }",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseurl}}/api/products",
+              "host": [
+                "{{baseurl}}"
+              ],
+              "path": [
+                "api",
+                "products"
+              ]
+            },
+            "description": "Test Case 16 — RBAC: Standard User Cannot Create Product\n\nDescription:  \nAttempts to create a product using a standard user account.  \nStandard users do not have permission to create products.\n\nMethod:  \nPOST\n\nEndpoint:  \n/api/products\n\nAuthentication:  \nRequired\n\nRole:  \nuser\n\nExpected Response:  \n403 Forbidden"
+          },
+          "response": []
+        },
+        {
+          "name": "getProductsById",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseurl}}/api/products/6abd58743df00873157c5760",
+              "host": [
+                "{{baseurl}}"
+              ],
+              "path": [
+                "api",
+                "products",
+                "6abd58743df00873157c5760"
+              ]
+            },
+            "description": "Test Case 17 — RBAC: Moderator Allowed to Create Product\n\nDescription:  \nCreates a new product using an authenticated moderator account.  \nModerators have permission to create products.\n\nMethod:  \nPOST\n\nEndpoint:  \n/api/products\n\nAuthentication:  \nRequired\n\nRole:  \nmoderator\n\nRequest Body:  \n{  \n\"name\": \"Wireless Headphones\",  \n\"description\": \"Bluetooth wireless headphones\",  \n\"price\": 2499,  \n\"category\": \"electronics\",  \n\"inStock\": true,  \n\"quantity\": 25  \n}\n\nExpected Response:  \n201 Created"
+          },
+          "response": []
+        },
+        {
+          "name": "deleteProduct",
+          "request": {
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseurl}}/api/products/6abd58743df00873157c5760",
+              "host": [
+                "{{baseurl}}"
+              ],
+              "path": [
+                "api",
+                "products",
+                "6abd58743df00873157c5760"
+              ]
+            },
+            "description": "Test Case 19 — RBAC: Moderator Cannot Delete Product\n\nDescription:  \nAttempts to delete a product using an authenticated moderator account.  \nModerators do not have permission to delete products.\n\nMethod:  \nDELETE\n\nEndpoint:  \n/api/products/:id\n\nAuthentication:  \nRequired\n\nRole:  \nmoderator\n\nExpected Response:  \n403 Forbidden\n\nTest Case 20 — RBAC: Admin Allowed to Delete Product\n\nDescription:  \nDeletes a product using an authenticated admin account.  \nAdministrators have permission to delete products.\n\nMethod:  \nDELETE\n\nEndpoint:  \n/api/products/:id\n\nAuthentication:  \nRequired\n\nRole:  \nadmin\n\nURL Parameter:  \nid — The unique ID of the product to be deleted.\n\nExpected Response:  \n200 OK"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "auth",
+      "item": [
+        {
+          "name": "register",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"name\": \"Ranjit Bhandary\",\r\n    \"email\": \"ranjitbhandary23@gmail.com\",\r\n    \"password\": \"ranjit2006\",\r\n    \"role\": \"user\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseurl}}/api/auth/register",
+              "host": [
+                "{{baseurl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "register"
+              ]
+            },
+            "description": "Test Case 03 — Missing Required Fields\n\nDescription:  \nAttempts to register a user without providing all required fields.\n\nExpected Response:  \n400 Bad Request\n\nTest Case 04 — Register Standard User\n\nDescription:  \nRegisters a new standard user successfully.\n\nRequest Body:  \n{  \n\"name\": \"Rahul Mangal\",  \n\"email\": \"[rahul@example.com](https://mailto:rahul@example.com)\",  \n\"password\": \"Password123\",  \n\"role\": \"user\"  \n}\n\nExpected Response:  \n201 Created\n\nTest Case 05 — Duplicate Email Blocked\n\nDescription:  \nAttempts to register another user using an email address that already exists.\n\nExpected Response:  \n409 Conflict\n\nTest Case 06 — Register Moderator User\n\nDescription:  \nRegisters a new moderator user successfully.\n\nRequest Body:  \n{  \n\"name\": \"Moderator User\",  \n\"email\": \"[moderator@example.com](https://mailto:moderator@example.com)\",  \n\"password\": \"Password123\",  \n\"role\": \"moderator\"  \n}\n\nExpected Response:  \n201 Created\n\nTest Case 07 — Register Admin User\n\nDescription:  \nRegisters a new administrator user successfully.\n\nRequest Body:  \n{  \n\"name\": \"Admin User\",  \n\"email\": \"[admin@example.com](https://mailto:admin@example.com)\",  \n\"password\": \"Password123\",  \n\"role\": \"admin\"  \n}\n\nExpected Response:  \n201 Created"
+          },
+          "response": []
+        },
+        {
+          "name": "login",
+          "request": {
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"email\": \"rajupagalworld123@gmail.com\",\r\n    \"password\": \"Rahul2007\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseurl}}/api/auth/login",
+              "host": [
+                "{{baseurl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "login"
+              ]
+            },
+            "description": "Test Case 08 — Wrong Password Rejection\n\nDescription:  \nAttempts to log in with a valid email but an incorrect password.\n\nRequest Body:  \n{  \n\"email\": \"[rahul@example.com](https://mailto:rahul@example.com)\",  \n\"password\": \"WrongPassword\"  \n}\n\nExpected Response:  \n401 Unauthorized\n\nTest Case 09 — Valid Login & Token Issue\n\nDescription:  \nAuthenticates the user with valid login credentials and returns a JWT token.\n\nRequest Body:  \n{  \n\"email\": \"[rahul@example.com](https://mailto:rahul@example.com)\",  \n\"password\": \"Password123\"  \n}\n\nExpected Response:  \n200 OK\n\nResponse includes:\n\n- User information\n    \n- JWT authentication token"
+          },
+          "response": []
+        },
+        {
+          "name": "me",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseurl}}/api/auth/me",
+              "host": [
+                "{{baseurl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "me"
+              ]
+            },
+            "description": "Test Case 10 — Get User Profile (/me)\n\nDescription:  \nFetches the profile of the currently logged-in user using a valid JWT token.\n\nMethod:  \nGET\n\nEndpoint:  \n/api/auth/me\n\nAuthorization:  \nBearer\n\nExpected Response:  \n200 OK\n\nResponse:  \nReturns the authenticated user's profile information.\n\nTest Case 11 — Access without Bearer Token\n\nDescription:  \nAttempts to access the user profile without providing a Bearer token.\n\nMethod:  \nGET\n\nEndpoint:  \n/api/auth/me\n\nAuthorization:  \nNo token provided\n\nExpected Response:  \n401 Unauthorized"
+          },
+          "response": []
+        },
+        {
+          "name": "updateDetails",
+          "request": {
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "raw",
+              "raw": "{\r\n    \"name\": \"Rahul Admin\",\r\n    \"email\": \"rajupagalworld123@gmail.com\",\r\n    \"password\": \"Rahul2007\",\r\n    \"role\": \"admin\"\r\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseurl}}/api/auth/updatedetails/",
+              "host": [
+                "{{baseurl}}"
+              ],
+              "path": [
+                "api",
+                "auth",
+                "updatedetails",
+                ""
+              ]
+            },
+            "description": "Test Case 12 — Update Profile Details\n\nDescription:  \nUpdates the name and email address of the currently authenticated user.\n\nMethod:  \nPUT\n\nEndpoint:  \n/api/auth/updatedetails\n\nAuthorization:  \nBearer\n\nExpected Response:  \n200 OK\n\nResponse:  \nReturns the updated user profile information."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "health-check",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseurl}}/api/health",
+          "host": [
+            "{{baseurl}}"
+          ],
+          "path": [
+            "api",
+            "health"
+          ]
+        },
+        "description": "Test Case 02 — System Health Check\n\nDescription:  \nVerifies that the API server is running correctly and the required services are available.\n\nMethod:  \nGET\n\nEndpoint:  \n/api/health\n\nAuthentication:  \nNot Required\n\nExpected Response:  \n200 OK"
+      },
+      "response": []
+    },
+    {
+      "name": "version-check",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseurl}}/api/version",
+          "host": [
+            "{{baseurl}}"
+          ],
+          "path": [
+            "api",
+            "version"
+          ]
+        },
+        "description": "API Version\n\nDescription:  \nReturns the current version and basic information about the API.\n\nMethod:  \nGET\n\nEndpoint:  \n/api/version\n\nAuthentication:  \nNot Required\n\nRequest Body:  \nNone\n\nExpected Response:  \n200 OK\n\nResponse:  \nReturns the current API version, deployment information, Node.js version, and platform details."
+      },
+      "response": []
+    }
+  ],
+  "variable": [
+    {
+      "key": "json_web_token_0lp6",
+      "secret": true
+    }
+  ]
+}

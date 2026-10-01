@@ -1,0 +1,20 @@
+{
+    "name": "Rahul Mangal",
+    "email": "rajupagalworld123@gmail.com",
+    "password": "Rahul2007",
+    "role": "admin"
+}
+
+{
+    "name": "Aviyash Yadav",
+    "email": "aviyashyadav23@gmail.com",
+    "password": "Yadav2006",
+    "role": "moderator"
+}
+
+{
+    "name": "Ranjit Bhandary",
+    "email": "ranjitbhandary23@gmail.com",
+    "password": "ranjit2006",
+    "role": "user"
+}
